@@ -1,7 +1,9 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+
 const connect = require('./connection/mongodb');
+const errorHandler = require('./middlewares/error_handler');
 
 const PORT = process.env.PORT || 3000;
 
@@ -15,6 +17,7 @@ app.use(
 )
 
 connect();
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
