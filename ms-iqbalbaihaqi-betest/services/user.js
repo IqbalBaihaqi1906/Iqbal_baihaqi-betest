@@ -101,6 +101,30 @@ class UserServices {
       throw error;
     }
   }
+
+  static async findByIdentityNumber(identityNumber) {
+    try {
+      const user = await User.findOne({
+        identityNumber,
+      });
+
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async findByAccountNumber(accountNumber) {
+    try {
+      const user = await User.findOne({
+        accountNumber,
+      });
+
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = UserServices;

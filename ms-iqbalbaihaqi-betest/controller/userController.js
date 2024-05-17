@@ -101,6 +101,50 @@ class UserController {
       next(error);
     }
   }
+
+  static async findByIdentityNumber(req, res, next) {
+    try {
+      const { identityNumber } = req.params
+
+      const user = await UserServices.findByIdentityNumber(identityNumber);
+
+      if (!user) {
+        const customError = new Error("User not found!");
+        customError.code = 404;
+        throw customError;
+      }
+
+      res.status(200).json({
+        success: true,
+        message: "User found",
+        data: user,
+      })
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async findByAccountNumber(req, res, next) {
+    try {
+      const { accountNumber } = req.params
+
+      const user = await UserServices.findByAccountNumber(accountNumber);
+
+      if (!user) {
+        const customError = new Error("User not found!");
+        customError.code = 404;
+        throw customError;
+      }
+
+      res.status(200).json({
+        success: true,
+        message: "User found",
+        data: user,
+      })
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = UserController
