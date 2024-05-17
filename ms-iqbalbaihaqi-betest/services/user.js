@@ -17,6 +17,16 @@ class UserServices {
     }
   }
 
+  static async findAll() {
+    try {
+      const users = await User.find();
+
+      return users;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   static async isDuplicate(userData, updateId = null) {
     try {
       const duplicateFields = [];

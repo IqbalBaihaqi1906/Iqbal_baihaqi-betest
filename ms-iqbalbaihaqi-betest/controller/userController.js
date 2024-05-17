@@ -24,6 +24,26 @@ class UserController {
       next(error);
     }
   }
+
+  static async findAll(req, res, next) {
+    try {
+      const users = await UserServices.findAll();
+
+      if (!users) {
+        const error = new Error("No Users Found");
+        error.code = 404;
+        throw error;
+      }
+
+      res.status(200).json({
+        success: true,
+        message: "Users Found",
+        data: users,
+      })
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = UserController
