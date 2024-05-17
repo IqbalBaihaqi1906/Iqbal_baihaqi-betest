@@ -7,5 +7,6 @@ userRoutes.get('/', UserController.findAll)
 
 userRoutes.post('/', UserController.create)
 userRoutes.patch('/:id', UserController.update)
+userRoutes.delete('/:id', UserController.deleteOne)
 
 module.exports = userRoutes;

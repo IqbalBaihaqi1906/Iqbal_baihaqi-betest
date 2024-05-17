@@ -85,6 +85,22 @@ class UserServices {
       throw error;
     }
   }
+
+  static async deleteOne(id) {
+    try {
+      const user = await User.findByIdAndDelete(id);
+
+      if (!user) {
+        const customError = new Error("User not found!");
+        customError.code = 404;
+        throw customError;
+      }
+
+      return user._id;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = UserServices;
