@@ -60,6 +60,31 @@ class UserController {
       next(error);
     }
   }
+
+  static async update(req, res, next) {
+    try {
+      const { id } = req.params
+
+      const userData = {
+        userName: req.body.userName,
+        emailAddress: req.body.emailAddress,
+        accountNumber: req.body.accountNumber,
+        identityNumber: req.body.identityNumber,
+      };
+
+      await UserServices.isDuplicate(userData, id);
+
+      const user = await UserServices.updateOne(id, userData);
+
+      res.status(200).json({
+        success: true,
+        message: "User updated",
+        data: user,
+      })
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = UserController

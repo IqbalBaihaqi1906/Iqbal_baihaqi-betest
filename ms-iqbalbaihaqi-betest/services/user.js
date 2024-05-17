@@ -57,12 +57,6 @@ class UserServices {
 
   static async findOneById(id) {
     try {
-      const cachedUser = await redis.get(`user-id:${id}`);
-
-      if (cachedUser) {
-        return JSON.parse(cachedUser);
-      }
-
       const user = await User.findById(id);
 
       if (!user) {
@@ -70,10 +64,23 @@ class UserServices {
         customError.code = 404;
         throw customError;
       }
-
-      await redis.set(`user-id:${id}`, JSON.stringify(user), 'EX', 3600);
-
       return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async updateOne(id, userData) {
+    try {
+      const user = await User.findByIdAndUpdate(id, userData);
+
+      if (!user) {
+        const customError = new Error("User not found!");
+        customError.code = 404;
+        throw customError;
+      }
+
+      return user._id;
     } catch (error) {
       throw error;
     }
