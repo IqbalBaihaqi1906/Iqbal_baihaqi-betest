@@ -4,6 +4,7 @@ const cors = require('cors');
 
 const connect = require('./connection/mongodb');
 const errorHandler = require('./middlewares/error_handler');
+const routes = require('./routes');
 
 const PORT = process.env.PORT || 3000;
 
@@ -16,6 +17,7 @@ app.use(
   })
 )
 
+app.use('/api', routes);
 connect();
 app.use(errorHandler);
 
