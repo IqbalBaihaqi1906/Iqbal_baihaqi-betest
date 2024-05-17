@@ -29,7 +29,7 @@ class UserController {
     try {
       const users = await UserServices.findAll();
 
-      if (!users) {
+      if (users.length === 0) {
         const error = new Error("No Users Found");
         error.code = 404;
         throw error;

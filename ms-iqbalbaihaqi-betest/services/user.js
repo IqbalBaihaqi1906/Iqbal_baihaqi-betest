@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const redis = require('../connection/redis');
 
 class UserServices {
   static async createUser(userData) {
@@ -12,6 +13,9 @@ class UserServices {
       });
 
       const newContact = await user.save();
+
+      this.clearCache();
+
       return newContact._id;
     } catch (error) {
       throw error;
@@ -20,7 +24,17 @@ class UserServices {
 
   static async findAll() {
     try {
+      const cachedUsers = await redis.get('users');
+
+      if (cachedUsers) {
+        return JSON.parse(cachedUsers);
+      }
+
       const users = await User.find();
+
+      if(users.length > 0) {
+        await redis.set('users', JSON.stringify(users), 'EX', 3600);
+      }
 
       return users;
     } catch (error) {
@@ -58,6 +72,12 @@ class UserServices {
 
   static async findOneById(id) {
     try {
+      const cachedUser = await redis.get(`user-id:${id}`);
+
+      if (cachedUser) {
+        return JSON.parse(cachedUser);
+      }
+
       const user = await User.findById(id);
 
       if (!user) {
@@ -65,6 +85,9 @@ class UserServices {
         customError.code = 404;
         throw customError;
       }
+
+      await redis.set(`user-id:${id}`, JSON.stringify(user), 'EX', 3600);
+
       return user;
     } catch (error) {
       throw error;
@@ -81,6 +104,8 @@ class UserServices {
         throw customError;
       }
 
+      this.clearCache(id);
+
       return user._id;
     } catch (error) {
       throw error;
@@ -96,6 +121,8 @@ class UserServices {
         customError.code = 404;
         throw customError;
       }
+
+      this.clearCache(id)
 
       return user._id;
     } catch (error) {
@@ -122,6 +149,17 @@ class UserServices {
       });
 
       return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async clearCache(id = null) {
+    try {
+      if (id) {
+        await redis.del(`user-id:${id}`);
+      }
+      await redis.del('users');
     } catch (error) {
       throw error;
     }
