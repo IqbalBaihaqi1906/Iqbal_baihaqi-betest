@@ -54,6 +54,30 @@ class UserServices {
       throw error;
     }
   }
+
+  static async findOneById(id) {
+    try {
+      const cachedUser = await redis.get(`user-id:${id}`);
+
+      if (cachedUser) {
+        return JSON.parse(cachedUser);
+      }
+
+      const user = await User.findById(id);
+
+      if (!user) {
+        const customError = new Error("User not found!");
+        customError.code = 404;
+        throw customError;
+      }
+
+      await redis.set(`user-id:${id}`, JSON.stringify(user), 'EX', 3600);
+
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = UserServices;

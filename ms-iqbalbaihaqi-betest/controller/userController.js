@@ -44,6 +44,22 @@ class UserController {
       next(error);
     }
   }
+
+  static async findOne(req, res, next) {
+    try {
+      const { id } = req.params
+
+      const user = await UserServices.findOneById(id);
+
+      res.status(200).json({
+        success: true,
+        message: "User found",
+        data: user,
+      })
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = UserController
