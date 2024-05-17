@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
 class UserServices {
@@ -121,6 +122,16 @@ class UserServices {
       });
 
       return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async generateToken() {
+    try {
+      const authorizationToken = jwt.sign({ isValidUser: true }, process.env.JWT_SECRET);
+
+      return authorizationToken;
     } catch (error) {
       throw error;
     }

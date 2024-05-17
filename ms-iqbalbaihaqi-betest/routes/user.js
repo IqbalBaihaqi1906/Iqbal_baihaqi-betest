@@ -2,6 +2,9 @@ const UserController = require('../controller/userController');
 
 const userRoutes = require('express').Router()
 
+userRoutes.get('/token', UserController.generateToken)
+
+
 userRoutes.get('/identityNumber/:identityNumber', UserController.findByIdentityNumber)
 userRoutes.get('/accountNumber/:accountNumber', UserController.findByAccountNumber)
 userRoutes.get('/:id', UserController.findOne)

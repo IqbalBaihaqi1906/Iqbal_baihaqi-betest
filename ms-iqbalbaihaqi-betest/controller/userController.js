@@ -145,6 +145,20 @@ class UserController {
       next(error);
     }
   }
+
+  static async generateToken(req, res, next) {
+    try {
+      const token = await UserServices.generateToken();
+
+      res.status(200).json({
+        success: true,
+        message: "Token generated",
+        data: token,
+      })
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = UserController
